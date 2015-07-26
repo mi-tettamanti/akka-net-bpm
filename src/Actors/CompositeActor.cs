@@ -36,7 +36,7 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, List<Tuple<Func<object, bool>, string>>> transitions = new Dictionary<string, List<Tuple<Func<object, bool>, string>>>();
         
         /// <summary>
-        /// To be implemented by concrete UntypedActor, this defines the behavior of the UntypedActor. This method is called for every message received by the actor.
+        /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
         /// </summary>
         /// <param name="message">The message.</param>
         protected override void OnReceive(object message)
