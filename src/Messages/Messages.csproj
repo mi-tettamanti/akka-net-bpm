@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\..\strongkey.snk</AssemblyOriginatorKeyFile>
@@ -51,9 +51,6 @@
   <ItemGroup>
     <None Include="..\..\Apache.licenseheader">
       <Link>Apache.licenseheader</Link>
-    </None>
-    <None Include="..\..\strongkey.snk">
-      <Link>strongkey.snk</Link>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
