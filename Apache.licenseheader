@@ -2,7 +2,7 @@ extensions: designer.cs generated.cs
 extensions: .cs
 #region Copyright
 /*
-Copyright 2014 Cluster Reply s.r.l.
+Copyright 2015 Cluster Reply s.r.l.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ limitations under the License.
 
 extensions: .cp .cpp .h
 /*
-Copyright 2014 Cluster Reply s.r.l.
+Copyright 2015 Cluster Reply s.r.l.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ limitations under the License.
 
 extensions:  .xml .config .xsd
 <!--
-Copyright 2014 Cluster Reply s.r.l.
+Copyright 2015 Cluster Reply s.r.l.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
