@@ -53,11 +53,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseActor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CodeActor.cs" />
     <Compile Include="CompositeActor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IActorContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProcessingActor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Apache.licenseheader">

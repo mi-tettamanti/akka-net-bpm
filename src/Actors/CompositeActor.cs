@@ -33,7 +33,7 @@ namespace Reply.Cluster.Akka.Actors
     public class CompositeActor : UntypedActor
     {
         private Dictionary<string, ActorPath> children = new Dictionary<string, ActorPath>();
-        private Dictionary<string, List<Tuple<Func<object, bool>, string>>> transitions = new Dictionary<string, List<Tuple<Func<object, bool>, string>>>();
+        private Dictionary<string, List<Transition>> transitions = new Dictionary<string, List<Transition>>();
         
         /// <summary>
         /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
@@ -49,8 +49,8 @@ namespace Reply.Cluster.Akka.Actors
             
             if (transitions.ContainsKey(source))
                 foreach (var transition in transitions[source])
-                    if (transition.Item1(message))
-                        targets.Add(transition.Item2);
+                    if (transition.Condition(message))
+                        targets.Add(transition.Destination);
 
             if (targets.Count == 0)
                 Unhandled(message);
@@ -87,19 +87,30 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
         public void AddTransition(string from, string to, Func<object, bool> condition)
         {
-            if (!string.IsNullOrEmpty(from) && !children.ContainsKey(from))
-                throw new ArgumentException(string.Format("There is not a registered child with name \"{0}\".", from), "from");
+            AddTransition(new Transition(from, to, condition));
+        }
 
-            if (string.IsNullOrEmpty(to))
-                throw new ArgumentException("Target child name must have a value.");
+        /// <summary>
+        /// Adds a transition between two children of the <see cref="CompositeActor"/>.
+        /// </summary>
+        /// <param name="transition"><see cref="Transition"/> to be added.</param>
+        /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
+        /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        public void AddTransition(Transition transition)
+        {
+            if (!string.IsNullOrEmpty(transition.Source) && !children.ContainsKey(transition.Source))
+                throw new ArgumentException(string.Format("There is not a registered child with name \"{0}\".", transition.Source), "transition");
 
-            if (!children.ContainsKey(to))
-                throw new ArgumentException(string.Format("There is not a registered child with name \"{0}\".", to), "to");
+            if (string.IsNullOrEmpty(transition.Destination))
+                throw new ArgumentException("Target child name must have a value.", "transition");
 
-            if (!transitions.ContainsKey(from))
-                transitions[from] = new List<Tuple<Func<object, bool>, string>>();
+            if (!children.ContainsKey(transition.Destination))
+                throw new ArgumentException(string.Format("There is not a registered child with name \"{0}\".", transition.Destination), "transition");
 
-            transitions[from].Add(new Tuple<Func<object, bool>, string>(condition, to));
+            if (!transitions.ContainsKey(transition.Source))
+                transitions[transition.Source] = new List<Transition>();
+
+            transitions[transition.Source].Add(transition);
         }
     }
 }
