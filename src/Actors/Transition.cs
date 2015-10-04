@@ -25,12 +25,15 @@ namespace Reply.Cluster.Akka.Actors
 {
     public class Transition
     {
-        public Transition(string source, string destination, Func<object, bool> condition)
+        public Transition(string name, string source, string destination, Func<object, bool> condition)
         {
+            Name = name;
             Source = source;
             Destination = destination;
             Condition = condition;
         }
+
+        public string Name { get; private set; }
 
         public string Source { get; private set; }
         public string Destination { get; private set; }

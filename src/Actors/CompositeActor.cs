@@ -33,7 +33,8 @@ namespace Reply.Cluster.Akka.Actors
     public class CompositeActor : UntypedActor
     {
         private Dictionary<string, ActorPath> children = new Dictionary<string, ActorPath>();
-        private Dictionary<string, List<Transition>> transitions = new Dictionary<string, List<Transition>>();
+        private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
+        private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
         
         /// <summary>
         /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
@@ -47,8 +48,8 @@ namespace Reply.Cluster.Akka.Actors
             if (!children.ContainsKey(source))
                 source = string.Empty;
             
-            if (transitions.ContainsKey(source))
-                foreach (var transition in transitions[source])
+            if (actorTransitions.ContainsKey(source))
+                foreach (var transition in actorTransitions[source])
                     if (transition.Condition(message))
                         targets.Add(transition.Destination);
 
@@ -78,16 +79,32 @@ namespace Reply.Cluster.Akka.Actors
         }
 
         /// <summary>
-        /// Adds a transition between two children of the <see cref="CompositeActor"/>.
+        /// Adds a transition between two children of the <see cref="CompositeActor"/>. The transition name is automatically generated.
         /// </summary>
         /// <param name="from">Name of the source child for the transition. If empty, the transition starts from outside the <see cref="CompositeActor"/>.</param>
         /// <param name="to">Name of the target child for the transition. Must have a value.</param>
         /// <param name="condition">Condition that is evaluated on the message. If the condition is true, the message is sent to the target child.</param>
         /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
         /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public void AddTransition(string from, string to, Func<object, bool> condition)
         {
-            AddTransition(new Transition(from, to, condition));
+            AddTransition(new Transition(Guid.NewGuid().ToString(), from, to, condition));
+        }
+
+        /// <summary>
+        /// Adds a transition between two children of the <see cref="CompositeActor"/>.
+        /// </summary>
+        /// <param name="name">Transition name. Must be unique.</param>
+        /// <param name="from">Name of the source child for the transition. If empty, the transition starts from outside the <see cref="CompositeActor"/>.</param>
+        /// <param name="to">Name of the target child for the transition. Must have a value.</param>
+        /// <param name="condition">Condition that is evaluated on the message. If the condition is true, the message is sent to the target child.</param>
+        /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
+        /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
+        public void AddTransition(string name, string from, string to, Func<object, bool> condition)
+        {
+            AddTransition(new Transition(name, from, to, condition));
         }
 
         /// <summary>
@@ -96,6 +113,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <param name="transition"><see cref="Transition"/> to be added.</param>
         /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
         /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public void AddTransition(Transition transition)
         {
             if (!string.IsNullOrEmpty(transition.Source) && !children.ContainsKey(transition.Source))
@@ -107,10 +125,14 @@ namespace Reply.Cluster.Akka.Actors
             if (!children.ContainsKey(transition.Destination))
                 throw new ArgumentException(string.Format("There is not a registered child with name \"{0}\".", transition.Destination), "transition");
 
-            if (!transitions.ContainsKey(transition.Source))
-                transitions[transition.Source] = new List<Transition>();
+            if (transitions.ContainsKey(transition.Name))
+                throw new ArgumentException(string.Format("A transition with name \"{0}\" was already added.", transition.Name), "transition");
 
-            transitions[transition.Source].Add(transition);
+            if (!actorTransitions.ContainsKey(transition.Source))
+                actorTransitions[transition.Source] = new List<Transition>();
+
+            actorTransitions[transition.Source].Add(transition);
+            transitions[transition.Name] = transition;
         }
     }
 }
