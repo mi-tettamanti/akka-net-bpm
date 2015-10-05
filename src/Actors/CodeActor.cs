@@ -28,28 +28,17 @@ namespace Reply.Cluster.Akka.Actors
     /// <summary>
     /// Actor that executes a function, sending back the response to the parent.
     /// </summary>
-    public class CodeActor : UntypedActor
+    public abstract class ExecutingActor : BaseActor
     {
         private Func<object, object> action;
 
-        /// <summary>
-        /// Creates an instance of <see cref="CodeActor"/>.
-        /// </summary>
-        /// <param name="action"><see cref="Func"/> executed when the actor receives a message.</param>
-        public CodeActor(Func<object, object> action)
-        {
-            this.action = action;
-        }
-
-        /// <summary>
-        /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
-        /// </summary>
-        /// <param name="message">The message.</param>
         protected override void OnReceive(object message)
         {
-            object response = action(message);
+            Execute(message);
 
-            Context.Parent.Tell(response);
+            Complete();
         }
+
+        protected abstract void Execute(object message);
     }
 }

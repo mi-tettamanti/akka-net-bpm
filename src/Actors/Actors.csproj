@@ -56,10 +56,12 @@
     <Compile Include="BaseActor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseActorProps.cs" />
     <Compile Include="CodeActor.cs" />
     <Compile Include="CompositeActor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CompositeActorProps.cs" />
     <Compile Include="IActorContext.cs">
       <SubType>Code</SubType>
     </Compile>

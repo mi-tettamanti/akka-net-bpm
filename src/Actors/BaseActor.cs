@@ -17,6 +17,7 @@ limitations under the License.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,18 +28,17 @@ namespace Reply.Cluster.Akka.Actors
 {
     public abstract class BaseActor : UntypedActor, IActorContext
     {
-        protected override void OnReceive(object message)
-        {
-            Execute(message);
-
-            Context.Parent.Tell(new Complete());
-        }
-
-        protected abstract void Execute(object message);
+        private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
+        private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
         protected void PutMessage(object message)
         {
             Context.Parent.Tell(message);
+        }
+
+        internal void Complete()
+        {
+            Context.Parent.Tell(new Complete());
         }
 
         #region IActorContext Members
@@ -48,6 +48,26 @@ namespace Reply.Cluster.Akka.Actors
             PutMessage(message);
         }
 
+        public IEnumerable<Transition> InboundTransitions
+        {
+            get { return inboundTransitions.Values; }
+        }
+
+        public IEnumerable<Transition> OutboundTransitions
+        {
+            get { return outboundTransitions.Values; }
+        }
+
         #endregion
+
+        public Dictionary<string, Transition> InternalInboundTransitions
+        {
+            set { inboundTransitions = value; }
+        }
+
+        public Dictionary<string, Transition> InternalOutboundTransitions
+        {
+            set { outboundTransitions = value; }
+        }
     }
 }

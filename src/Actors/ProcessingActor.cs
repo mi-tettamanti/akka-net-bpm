@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public abstract class ProcessingActor : BaseActor
+    public abstract class ProcessingActor : ExecutingActor
     {
         protected override void Execute(object message)
         {

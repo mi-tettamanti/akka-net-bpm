@@ -17,6 +17,7 @@ limitations under the License.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,5 +27,8 @@ namespace Reply.Cluster.Akka.Actors
     interface IActorContext
     {
         void PutMessage(object message);
+
+        IEnumerable<Transition> InboundTransitions { get; }
+        IEnumerable<Transition> OutboundTransitions { get; }
     }
 }
