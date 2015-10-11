@@ -30,7 +30,7 @@ namespace Reply.Cluster.Akka.Actors
     /// Actor that coordinates multiple child actors.
     /// It has a list of registered children and transitions. When it receives a messages, it evaluates the trasitions to decide where to send it.
     /// </summary>
-    public class CompositeActor : BaseActor
+    public class CompositeActor : Actor
     {
         private Dictionary<string, ActorPath> children = new Dictionary<string, ActorPath>();
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
@@ -68,7 +68,7 @@ namespace Reply.Cluster.Akka.Actors
         /// </summary>
         /// <param name="actorProps"><see cref="Props"/> used to create the child.</param>
         /// <param name="name">Child name. Must be unique.</param>
-        internal void AddChild(BaseActorProps actorProps, string name)
+        internal void AddChild(ActorProps actorProps, string name)
         {
             var child = Context.ActorOf(actorProps, name);
             children[name] = child.Path;

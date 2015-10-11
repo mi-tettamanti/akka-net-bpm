@@ -8,9 +8,9 @@ namespace Reply.Cluster.Akka.Actors
 {
     public static class ActorFactory
     {
-        public static BaseActorProps CreateActor<T>(params object[] args) where T : BaseActor
+        public static ActorProps CreateActor<T>(params object[] args) where T : Actor
         {
-            return new BaseActorProps(typeof(T), args);
+            return new ActorProps(typeof(T), args);
         }
 
         public static CompositeActorProps CreateContainer<T>(params object[] args) where T : CompositeActor

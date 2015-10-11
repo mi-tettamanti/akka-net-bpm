@@ -7,12 +7,12 @@ using Akka.Actor;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public class BaseActorProps : Props
+    public class ActorProps : Props
     {
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
-        protected internal BaseActorProps(Type type, object[] args)
+        protected internal ActorProps(Type type, object[] args)
             : base(type, args)
         { }
 
@@ -28,7 +28,7 @@ namespace Reply.Cluster.Akka.Actors
 
         public override ActorBase NewActor()
         {
-            var actor = base.NewActor() as BaseActor;
+            var actor = base.NewActor() as Actor;
 
             actor.InternalInboundTransitions = inboundTransitions;
             actor.InternalOutboundTransitions = outboundTransitions;

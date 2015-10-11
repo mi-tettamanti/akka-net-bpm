@@ -53,10 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseActor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="BaseActorProps.cs" />
+    <Compile Include="Actor.cs" />
+    <Compile Include="ActorProps.cs" />
     <Compile Include="CodeActor.cs" />
     <Compile Include="CompositeActor.cs">
       <SubType>Code</SubType>

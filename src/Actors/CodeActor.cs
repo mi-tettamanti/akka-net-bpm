@@ -28,7 +28,7 @@ namespace Reply.Cluster.Akka.Actors
     /// <summary>
     /// Actor that executes a function, sending back the response to the parent.
     /// </summary>
-    public abstract class ExecutingActor : BaseActor
+    public abstract class ExecutingActor : Actor
     {
         private Func<object, object> action;
 

@@ -29,7 +29,7 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
-        private Dictionary<string, BaseActorProps> children = new Dictionary<string, BaseActorProps>();
+        private Dictionary<string, ActorProps> children = new Dictionary<string, ActorProps>();
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
         private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
 
@@ -54,7 +54,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <param name="name">Child name. Must be unique.</param>
         /// <returns><see cref="IActorRef"/> corresponding to the newly created child.</returns>
         /// <exception cref="ArgumentException">A child with the same name was already added.</exception>
-        public CompositeActorProps AddChild(string name, BaseActorProps actorProps)
+        public CompositeActorProps AddChild(string name, ActorProps actorProps)
         {
             if (children.ContainsKey(name))
                 throw new ArgumentException(string.Format("A child with name \"{0}\" was already added.", name), "name");

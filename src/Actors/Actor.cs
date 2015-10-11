@@ -26,7 +26,7 @@ using Reply.Cluster.Akka.Messages;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public abstract class BaseActor : UntypedActor, IActorContext
+    public abstract class Actor : UntypedActor, IActorContext
     {
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
