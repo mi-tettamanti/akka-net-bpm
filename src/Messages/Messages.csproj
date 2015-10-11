@@ -50,6 +50,7 @@
     <Compile Include="Factory.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToBeCompleted.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Apache.licenseheader">

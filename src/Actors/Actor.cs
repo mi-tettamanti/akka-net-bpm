@@ -36,9 +36,9 @@ namespace Reply.Cluster.Akka.Actors
             Context.Parent.Tell(message);
         }
 
-        internal void Complete()
+        internal void Complete(Guid messageId)
         {
-            Context.Parent.Tell(new Complete());
+            Context.Parent.Tell(new Complete(messageId));
         }
 
         #region IActorContext Members

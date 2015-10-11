@@ -25,5 +25,11 @@ namespace Reply.Cluster.Akka.Messages
 {
     public class Complete
     {
+        public Complete(Guid messageId)
+        {
+            CompletedMessageId = messageId;
+        }
+
+        public Guid CompletedMessageId { get; private set; }
     }
 }

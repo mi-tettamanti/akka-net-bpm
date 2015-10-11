@@ -37,7 +37,7 @@ namespace Reply.Cluster.Akka.Actors
             {
                 Execute(message);
 
-                Complete();
+                Complete(message.MessageId);
             });
         }
 

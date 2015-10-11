@@ -37,12 +37,19 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
         private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
 
+        private IActorRef parent;
+        private Guid originalMessageId;
+
+        private HashSet<Guid> processingMessages = new HashSet<Guid>();
+
         internal Dictionary<string, Transition> Transitions { set { transitions = value; } }
         internal Dictionary<string, List<Transition>> ActorTransitions { set { actorTransitions = value; } }
 
         public CompositeActor()
         {
             Receive<Message>(message => ProcessMessage(message));
+            Receive<Complete>(message => CompleteMessage(message));
+            Receive<ToBeCompleted>(message => Complete(originalMessageId));
         }
 
         /// <summary>
@@ -51,6 +58,15 @@ namespace Reply.Cluster.Akka.Actors
         /// <param name="message">The message.</param>
         private bool ProcessMessage(Message message)
         {
+            if (message == null)
+                return false;
+
+            if (parent == null)
+            {
+                parent = Sender;
+                originalMessageId = message.MessageId;
+            }
+
             string source = Sender.Path.Name;
             var targets = new List<string>();
 
@@ -66,7 +82,32 @@ namespace Reply.Cluster.Akka.Actors
                 return false;
             else
                 foreach (string target in targets)
-                    Context.ActorSelection(children[target]).Tell(message, Sender);
+                {
+                    var targetChild = children[target];
+                    var targetMessage = Messages.Factory.CreateMessage(message);
+
+                    Context.ActorSelection(targetChild).Tell(targetMessage, Sender);
+
+                    processingMessages.Add(targetMessage.MessageId);
+                }
+
+            return true;
+        }
+
+        private bool CompleteMessage(Complete completionMessage)
+        {
+            if (parent == null)
+                return false;
+
+            Guid messageId = completionMessage.CompletedMessageId;
+
+            if (!processingMessages.Contains(messageId))
+                return false;
+
+            processingMessages.Remove(messageId);
+
+            if (processingMessages.Count == 0)
+                Self.Tell(new ToBeCompleted(), parent);
 
             return true;
         }

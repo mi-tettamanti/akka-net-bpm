@@ -10,7 +10,7 @@ namespace Reply.Cluster.Akka.Messages
     {
         internal Message()
         {
-            MessageId = Guid.NewGuid().ToString();
+            MessageId = Guid.NewGuid();
             Timestamp = DateTime.Now;
             Properties = new Dictionary<string, object>();
         }
@@ -34,7 +34,7 @@ namespace Reply.Cluster.Akka.Messages
 
         public virtual string CorrelationID { get; set; }
 
-        public string MessageId { get; private set; }
+        public Guid MessageId { get; private set; }
 
         public DateTime Timestamp { get; private set; }
 
