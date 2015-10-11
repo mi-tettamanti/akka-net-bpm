@@ -8,13 +8,21 @@ namespace Reply.Cluster.Akka.Messages
 {
     public class Message
     {
-        public Message() : this(Guid.NewGuid().ToString()) { }
-
-        public Message(string messageId)
+        internal Message()
         {
-            MessageId = messageId;
+            MessageId = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Properties = new Dictionary<string, object>();
+        }
+
+        internal Message(Message message)
+            : this()
+        {
+            CorrelationID = message.CorrelationID;
+            Type = message.Type;
+
+            foreach (string property in message.Properties.Keys)
+                Properties[property] = message.Properties[property];
         }
 
         public virtual void ClearBody() { }
