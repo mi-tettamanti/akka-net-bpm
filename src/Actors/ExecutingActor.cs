@@ -15,20 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #endregion
+
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Akka.Actor;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public interface IActorContext
+    /// <summary>
+    /// Actor that executes a function, sending back the response to the parent.
+    /// </summary>
+    public abstract class ExecutingActor : Actor
     {
-        void PutMessage(object message);
+        protected override void OnReceive(object message)
+        {
+            Execute(message);
 
-        IEnumerable<Transition> InboundTransitions { get; }
-        IEnumerable<Transition> OutboundTransitions { get; }
+            Complete();
+        }
+
+        protected abstract void Execute(object message);
     }
 }

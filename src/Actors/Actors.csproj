@@ -53,14 +53,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionActor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Actor.cs" />
     <Compile Include="ActorProps.cs" />
-    <Compile Include="CodeActor.cs" />
     <Compile Include="CompositeActor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CompositeActorProps.cs" />
     <Compile Include="ActorFactory.cs" />
+    <Compile Include="ExecutingActor.cs" />
+    <Compile Include="FunctionActor.cs" />
     <Compile Include="IActorContext.cs">
       <SubType>Code</SubType>
     </Compile>

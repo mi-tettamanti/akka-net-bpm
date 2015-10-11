@@ -28,17 +28,20 @@ namespace Reply.Cluster.Akka.Actors
     /// <summary>
     /// Actor that executes a function, sending back the response to the parent.
     /// </summary>
-    public abstract class ExecutingActor : Actor
+    public abstract class ActionActor : ExecutingActor
     {
-        private Func<object, object> action;
+        private Action<object, IActorContext, object[]> action;
+        private object[] args;
 
-        protected override void OnReceive(object message)
+        public ActionActor(Action<object, IActorContext, object[]> action, params object[] args)
         {
-            Execute(message);
-
-            Complete();
+            this.action = action;
+            this.args = args;
         }
 
-        protected abstract void Execute(object message);
+        protected override void Execute(object message)
+        {
+            action(message, this, args);
+        }
     }
 }
