@@ -12,14 +12,9 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
-        protected BaseActorProps(Type type, object[] args)
+        protected internal BaseActorProps(Type type, object[] args)
             : base(type, args)
         { }
-
-        public static BaseActorProps Create<T>(params object[] args) where T : BaseActor
-        {
-            return new BaseActorProps(typeof(T), args);
-        }
 
         internal void AddInboundTransition(Transition transition)
         {

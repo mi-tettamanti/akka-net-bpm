@@ -62,6 +62,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CompositeActorProps.cs" />
+    <Compile Include="ActorFactory.cs" />
     <Compile Include="IActorContext.cs">
       <SubType>Code</SubType>
     </Compile>

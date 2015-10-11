@@ -33,14 +33,9 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
         private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
 
-        protected CompositeActorProps(Type type, object[] args)
+        protected internal CompositeActorProps(Type type, object[] args)
             : base(type, args)
         { }
-
-        public static CompositeActorProps Create<T>(params object[] args) where T : CompositeActor
-        {
-            return new CompositeActorProps(typeof(T), args);
-        }
 
         internal void AddInboundTransition(Transition transition)
         {
