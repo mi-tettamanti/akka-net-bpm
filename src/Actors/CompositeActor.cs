@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Akka;
 using Akka.Actor;
+using Reply.Cluster.Akka.Messages;
 
 namespace Reply.Cluster.Akka.Actors
 {
@@ -39,11 +40,16 @@ namespace Reply.Cluster.Akka.Actors
         internal Dictionary<string, Transition> Transitions { set { transitions = value; } }
         internal Dictionary<string, List<Transition>> ActorTransitions { set { actorTransitions = value; } }
 
+        public CompositeActor()
+        {
+            Receive<Message>(message => ProcessMessage(message));
+        }
+
         /// <summary>
         /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
         /// </summary>
         /// <param name="message">The message.</param>
-        protected override void OnReceive(object message)
+        private bool ProcessMessage(Message message)
         {
             string source = Sender.Path.Name;
             var targets = new List<string>();
@@ -57,10 +63,12 @@ namespace Reply.Cluster.Akka.Actors
                         targets.Add(transition.Destination);
 
             if (targets.Count == 0)
-                Unhandled(message);
+                return false;
             else
                 foreach (string target in targets)
                     Context.ActorSelection(children[target]).Tell(message, Sender);
+
+            return true;
         }
 
         /// <summary>

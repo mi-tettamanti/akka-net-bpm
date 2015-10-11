@@ -31,14 +31,14 @@ namespace Reply.Cluster.Akka.Actors
     /// </summary>
     public abstract class ExecutingActor : Actor
     {
-        protected override void OnReceive(object message)
+        public ExecutingActor()
         {
-            if (message is Message)
+            Receive<Message>(message =>
             {
-                Execute(message as Message);
+                Execute(message);
 
                 Complete();
-            }
+            });
         }
 
         protected abstract void Execute(Message message);
