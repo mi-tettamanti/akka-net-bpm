@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Reply.Cluster.Akka.Messages;
 
 namespace Reply.Cluster.Akka.Actors
 {
@@ -32,11 +33,14 @@ namespace Reply.Cluster.Akka.Actors
     {
         protected override void OnReceive(object message)
         {
-            Execute(message);
+            if (message is Message)
+            {
+                Execute(message as Message);
 
-            Complete();
+                Complete();
+            }
         }
 
-        protected abstract void Execute(object message);
+        protected abstract void Execute(Message message);
     }
 }

@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #endregion
+using Reply.Cluster.Akka.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +26,11 @@ namespace Reply.Cluster.Akka.Actors
 {
     public abstract class ProcessingActor : ExecutingActor
     {
-        protected override void Execute(object message)
+        protected override void Execute(Message message)
         {
             PutMessage(Process(message));
         }
 
-        protected abstract object Process(object message);
+        protected abstract Message Process(Message message);
     }
 }

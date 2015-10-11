@@ -31,7 +31,7 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
-        protected void PutMessage(object message)
+        protected void PutMessage(Message message)
         {
             Context.Parent.Tell(message);
         }
@@ -43,7 +43,7 @@ namespace Reply.Cluster.Akka.Actors
 
         #region IActorContext Members
 
-        void IActorContext.PutMessage(object message)
+        void IActorContext.PutMessage(Message message)
         {
             PutMessage(message);
         }

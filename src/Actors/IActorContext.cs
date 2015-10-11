@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #endregion
+using Reply.Cluster.Akka.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,7 +27,7 @@ namespace Reply.Cluster.Akka.Actors
 {
     public interface IActorContext
     {
-        void PutMessage(object message);
+        void PutMessage(Message message);
 
         IEnumerable<Transition> InboundTransitions { get; }
         IEnumerable<Transition> OutboundTransitions { get; }
