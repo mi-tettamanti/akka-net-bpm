@@ -9,6 +9,8 @@ namespace Reply.Cluster.Akka.Actors
 {
     public class ActorProps : Props
     {
+        private bool completed = false;
+
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
@@ -28,12 +30,23 @@ namespace Reply.Cluster.Akka.Actors
 
         public override ActorBase NewActor()
         {
+            if (!completed)
+                throw new InvalidOperationException("Props initialization must be completed before generating a new actor.");
+
             var actor = base.NewActor() as Actor;
 
             actor.InternalInboundTransitions = inboundTransitions;
             actor.InternalOutboundTransitions = outboundTransitions;
 
             return actor;
+        }
+
+        public virtual void Complete()
+        {
+            if (completed)
+                throw new InvalidOperationException("Props initialization is already completed.");
+
+            completed = true;
         }
     }
 }

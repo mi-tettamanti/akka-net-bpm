@@ -24,11 +24,8 @@ using Akka.Actor;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public class CompositeActorProps : Props
+    public class CompositeActorProps : ActorProps
     {
-        private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
-        private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
-
         private Dictionary<string, ActorProps> children = new Dictionary<string, ActorProps>();
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
         private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
@@ -36,16 +33,6 @@ namespace Reply.Cluster.Akka.Actors
         protected internal CompositeActorProps(Type type, object[] args)
             : base(type, args)
         { }
-
-        internal void AddInboundTransition(Transition transition)
-        {
-            inboundTransitions[transition.Name] = transition;
-        }
-
-        internal void AddOutboundTransition(Transition transition)
-        {
-            outboundTransitions[transition.Name] = transition;
-        }
 
         /// <summary>
         /// Adds a child to the <see cref="CompositeActor"/>.
@@ -124,6 +111,14 @@ namespace Reply.Cluster.Akka.Actors
             children[transition.Destination].AddInboundTransition(transition);
 
             return this;
+        }
+
+        public override void Complete()
+        {
+            foreach (var name in children.Keys)
+                children[name].Complete();
+
+            base.Complete();
         }
 
         public override ActorBase NewActor()
