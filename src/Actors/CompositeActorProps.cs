@@ -107,7 +107,8 @@ namespace Reply.Cluster.Akka.Actors
             actorTransitions[transition.Source].Add(transition);
             transitions[transition.Name] = transition;
 
-            children[transition.Source].AddOutboundTransition(transition);
+            if (!string.IsNullOrEmpty(transition.Source))
+                children[transition.Source].AddOutboundTransition(transition);
             children[transition.Destination].AddInboundTransition(transition);
 
             return this;
