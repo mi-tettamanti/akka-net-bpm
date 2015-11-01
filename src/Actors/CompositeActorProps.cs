@@ -113,12 +113,14 @@ namespace Reply.Cluster.Akka.Actors
             return this;
         }
 
-        public override void Complete()
+        public override ActorProps Complete()
         {
             foreach (var name in children.Keys)
                 children[name].Complete();
 
             base.Complete();
+
+            return this;
         }
 
         public override ActorBase NewActor()

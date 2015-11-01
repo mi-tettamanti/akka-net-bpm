@@ -41,12 +41,14 @@ namespace Reply.Cluster.Akka.Actors
             return actor;
         }
 
-        public virtual void Complete()
+        public virtual ActorProps Complete()
         {
             if (completed)
                 throw new InvalidOperationException("Props initialization is already completed.");
 
             completed = true;
+
+            return this;
         }
     }
 }
