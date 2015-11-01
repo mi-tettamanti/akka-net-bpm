@@ -29,7 +29,7 @@ namespace Reply.Cluster.Akka.Actors
     /// <summary>
     /// Actor that executes a function, sending back the response to the parent.
     /// </summary>
-    public abstract class ActionActor : ExecutingActor
+    public class ActionActor : ExecutingActor
     {
         private Action<Message, IActorContext, object[]> action;
         private object[] args;
