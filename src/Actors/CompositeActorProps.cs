@@ -30,6 +30,16 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> transitions = new Dictionary<string, Transition>();
         private Dictionary<string, List<Transition>> actorTransitions = new Dictionary<string, List<Transition>>();
 
+        protected CompositeActorProps(CompositeActorProps props)
+            : base(props)
+        {
+            foreach (var childName in props.children.Keys)
+                this.AddChild(childName, props.children[childName].InternalCopy());
+        
+            this.transitions = props.transitions;
+            this.actorTransitions = props.actorTransitions;
+        }
+
         protected internal CompositeActorProps(Type type, object[] args)
             : base(type, args)
         { }
@@ -112,6 +122,11 @@ namespace Reply.Cluster.Akka.Actors
             children[transition.Destination].AddInboundTransition(transition);
 
             return this;
+        }
+
+        protected internal override ActorProps InternalCopy()
+        {
+            return new CompositeActorProps(this);
         }
 
         public override ActorProps Complete()

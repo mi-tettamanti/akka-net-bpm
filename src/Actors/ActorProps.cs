@@ -14,6 +14,17 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
+        protected ActorProps(ActorProps props)
+            : base(props.Type, props.SupervisorStrategy, props.Arguments)
+        {
+            if (!props.completed)
+                throw new InvalidOperationException("Props initialization must be completed before cloning it.");
+
+            this.completed = props.completed;
+            this.inboundTransitions = props.inboundTransitions;
+            this.outboundTransitions = props.outboundTransitions;
+        }
+
         protected internal ActorProps(Type type, object[] args)
             : base(type, args)
         { }
@@ -39,6 +50,16 @@ namespace Reply.Cluster.Akka.Actors
             actor.InternalOutboundTransitions = outboundTransitions;
 
             return actor;
+        }
+
+        protected internal virtual ActorProps InternalCopy()
+        {
+            return new ActorProps(this);
+        }
+
+        protected override Props Copy()
+        {
+            return InternalCopy();
         }
 
         public virtual ActorProps Complete()
