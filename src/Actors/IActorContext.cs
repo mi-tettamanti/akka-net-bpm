@@ -29,6 +29,8 @@ namespace Reply.Cluster.Akka.Actors
     {
         void PutMessage(Message message);
 
+        string CorrelationID { get; }
+
         IEnumerable<Transition> InboundTransitions { get; }
         IEnumerable<Transition> OutboundTransitions { get; }
     }

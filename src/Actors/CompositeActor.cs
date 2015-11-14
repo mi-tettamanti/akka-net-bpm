@@ -29,7 +29,7 @@ namespace Reply.Cluster.Akka.Actors
 {
     /// <summary>
     /// Actor that coordinates multiple child actors.
-    /// It has a list of registered children and transitions. When it receives a messages, it evaluates the trasitions to decide where to send it.
+    /// It has a list of registered children and transitions. When it receives a messages, it evaluates the transitions to decide where to send it.
     /// </summary>
     public class CompositeActor : Actor
     {
@@ -40,14 +40,14 @@ namespace Reply.Cluster.Akka.Actors
         private IActorRef parent;
         private Guid originalMessageId;
 
-        private HashSet<Guid> processingMessages = new HashSet<Guid>();
+        private Dictionary<string, HashSet<Guid>> processingMessages = new Dictionary<string, HashSet<Guid>>();
 
         internal Dictionary<string, Transition> Transitions { set { transitions = value; } }
         internal Dictionary<string, List<Transition>> ActorTransitions { set { actorTransitions = value; } }
 
         public CompositeActor()
+            : base()
         {
-            Receive<Message>(message => ProcessMessage(message));
             Receive<Complete>(message => CompleteMessage(message));
             Receive<ToBeCompleted>(message => Complete(originalMessageId));
         }
@@ -56,7 +56,7 @@ namespace Reply.Cluster.Akka.Actors
         /// To be implemented by concrete <see cref="UntypedActor"/>, this defines the behavior of the <see cref="UntypedActor"/>. This method is called for every message received by the actor.
         /// </summary>
         /// <param name="message">The message.</param>
-        private bool ProcessMessage(Message message)
+        protected override bool ProcessMessage(Message message)
         {
             if (message == null)
                 return false;
@@ -88,7 +88,10 @@ namespace Reply.Cluster.Akka.Actors
 
                     Context.ActorSelection(targetChild).Tell(targetMessage, Sender);
 
-                    processingMessages.Add(targetMessage.MessageId);
+                    if (!processingMessages.ContainsKey(CorrelationID))
+                        processingMessages[CorrelationID] = new HashSet<Guid>();
+
+                    processingMessages[CorrelationID].Add(targetMessage.MessageId);
                 }
 
             return true;
@@ -99,15 +102,24 @@ namespace Reply.Cluster.Akka.Actors
             if (parent == null)
                 return false;
 
-            Guid messageId = completionMessage.CompletedMessageId;
-
-            if (!processingMessages.Contains(messageId))
+            Guid messageId = completionMessage.MessageId;
+            
+            if (!processingMessages.ContainsKey(CorrelationID))
                 return false;
 
-            processingMessages.Remove(messageId);
+            var relatedProcessingMessages = processingMessages[CorrelationID];
 
-            if (processingMessages.Count == 0)
-                Self.Tell(new ToBeCompleted(), parent);
+            if (!relatedProcessingMessages.Contains(messageId))
+                return false;
+
+            relatedProcessingMessages.Remove(messageId);
+
+            if (relatedProcessingMessages.Count == 0)
+            {
+                processingMessages.Remove(CorrelationID);
+
+                Self.Tell(new ToBeCompleted(messageId, CorrelationID), parent);
+            }
 
             return true;
         }

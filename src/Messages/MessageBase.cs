@@ -20,15 +20,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Akka.Routing;
 
 namespace Reply.Cluster.Akka.Messages
 {
-    public class Complete : MessageBase
+    public abstract class MessageBase : IConsistentHashable
     {
-        public Complete(Guid messageId, string correlationID)
+        public MessageBase()
         {
-            MessageId = messageId;
-            CorrelationID = correlationID;
+            MessageId = Guid.NewGuid();
         }
+
+        public virtual string CorrelationID { get; set; }
+
+        public Guid MessageId { get; protected set; }
+
+        #region IConsistentHashable Members
+
+        object IConsistentHashable.ConsistentHashKey
+        {
+            get { return CorrelationID; }
+        }
+
+        #endregion
     }
 }

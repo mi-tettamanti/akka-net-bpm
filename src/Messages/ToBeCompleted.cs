@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Reply.Cluster.Akka.Messages
 {
-    public class ToBeCompleted
+    public class ToBeCompleted : MessageBase
     {
+        public ToBeCompleted(Guid messageId, string correlationID)
+        {
+            MessageId = messageId;
+            CorrelationID = correlationID;
+        }
     }
 }

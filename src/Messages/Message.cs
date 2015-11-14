@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Reply.Cluster.Akka.Messages
 {
-    public class Message
+    public class Message : MessageBase
     {
         internal Message()
+            : base()
         {
-            MessageId = Guid.NewGuid();
+            CorrelationID = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Properties = new Dictionary<string, object>();
         }
@@ -31,10 +32,6 @@ namespace Reply.Cluster.Akka.Messages
         {
             Properties.Clear();
         }
-
-        public virtual string CorrelationID { get; set; }
-
-        public Guid MessageId { get; private set; }
 
         public DateTime Timestamp { get; private set; }
 

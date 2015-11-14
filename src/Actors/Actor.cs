@@ -31,6 +31,18 @@ namespace Reply.Cluster.Akka.Actors
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
 
+        public Actor()
+        {
+            Receive<Message>(message => 
+            {
+                CorrelationID = message.CorrelationID;
+
+                ProcessMessage(message);
+            });
+        }
+
+        protected abstract bool ProcessMessage(Message message);
+
         protected void PutMessage(Message message)
         {
             Context.Parent.Tell(message);
@@ -38,7 +50,7 @@ namespace Reply.Cluster.Akka.Actors
 
         internal void Complete(Guid messageId)
         {
-            Context.Parent.Tell(new Complete(messageId));
+            Context.Parent.Tell(new Complete(messageId, CorrelationID));
         }
 
         #region IActorContext Members
@@ -47,6 +59,8 @@ namespace Reply.Cluster.Akka.Actors
         {
             PutMessage(message);
         }
+
+        public string CorrelationID { get; private set; }
 
         public IEnumerable<Transition> InboundTransitions
         {
