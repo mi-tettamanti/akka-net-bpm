@@ -76,6 +76,20 @@ namespace Reply.Cluster.Akka.Actors
         }
 
         /// <summary>
+        /// Adds a transition between two children of the <see cref="CompositeActor"/>. The transition name is automatically generated.
+        /// </summary>
+        /// <param name="from">Name of the source child for the transition. If empty, the transition starts from outside the <see cref="CompositeActor"/>.</param>
+        /// <param name="to">Name of the target child for the transition. Must have a value.</param>
+        /// <param name="condition">Condition that is evaluated on the message. If the condition is true, the message is sent to the target child.</param>
+        /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
+        /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
+        public CompositeActorProps AddTransition(string from, string to, string condition)
+        {
+            return AddTransition(new Transition(Guid.NewGuid().ToString(), from, to, condition));
+        }
+
+        /// <summary>
         /// Adds a transition between two children of the <see cref="CompositeActor"/>.
         /// </summary>
         /// <param name="name">Transition name. Must be unique.</param>
@@ -86,6 +100,21 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
         /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public CompositeActorProps AddTransition(string name, string from, string to, Func<object, bool> condition)
+        {
+            return AddTransition(new Transition(name, from, to, condition));
+        }
+
+        /// <summary>
+        /// Adds a transition between two children of the <see cref="CompositeActor"/>.
+        /// </summary>
+        /// <param name="name">Transition name. Must be unique.</param>
+        /// <param name="from">Name of the source child for the transition. If empty, the transition starts from outside the <see cref="CompositeActor"/>.</param>
+        /// <param name="to">Name of the target child for the transition. Must have a value.</param>
+        /// <param name="condition">Condition that is evaluated on the message. If the condition is true, the message is sent to the target child.</param>
+        /// <exception cref="ArgumentException">Source or target child names are not registered on the <see cref="CompositeActor"/>.</exception>
+        /// <exception cref="ArgumentException">Target child name has not a vale.</exception>
+        /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
+        public CompositeActorProps AddTransition(string name, string from, string to, string condition)
         {
             return AddTransition(new Transition(name, from, to, condition));
         }

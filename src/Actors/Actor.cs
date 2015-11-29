@@ -43,11 +43,6 @@ namespace Reply.Cluster.Akka.Actors
 
         protected abstract bool ProcessMessage(Message message);
 
-        protected void PutMessage(Message message)
-        {
-            Context.Parent.Tell(message);
-        }
-
         internal void Complete(Guid messageId)
         {
             Context.Parent.Tell(new Complete(messageId, CorrelationID));
@@ -55,9 +50,9 @@ namespace Reply.Cluster.Akka.Actors
 
         #region IActorContext Members
 
-        void IActorContext.PutMessage(Message message)
+        public void PutMessage(Message message)
         {
-            PutMessage(message);
+            Context.Parent.Tell(message);
         }
 
         public string CorrelationID { get; private set; }

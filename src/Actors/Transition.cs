@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #endregion
+using NLua;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,21 @@ namespace Reply.Cluster.Akka.Actors
             Source = source;
             Destination = destination;
             Condition = condition;
+        }
+
+        public Transition(string name, string source, string destination, string condition)
+        {
+            Name = name;
+            Source = source;
+            Destination = destination;
+            Condition = m =>
+            {
+                using (var state = new Lua())
+                {
+                    state["message"] = m;
+                    return state.DoString($"return {condition}").First() as bool? ?? false;
+                }
+            };
         }
 
         public string Name { get; }
