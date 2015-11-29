@@ -8,18 +8,12 @@ namespace Reply.Cluster.Akka.Messages
 {
     public class Message : MessageBase
     {
-        internal Message()
-            : base()
-        {
-            CorrelationID = Guid.NewGuid().ToString();
-            Timestamp = DateTime.Now;
-            Properties = new Dictionary<string, object>();
-        }
+        internal Message() : base(Guid.NewGuid().ToString()) { }
+        internal Message(string correlationID) : base(correlationID) { }
 
         internal Message(Message message)
-            : this()
+            : this(message.CorrelationID)
         {
-            CorrelationID = message.CorrelationID;
             Type = message.Type;
 
             foreach (string property in message.Properties.Keys)
@@ -33,10 +27,9 @@ namespace Reply.Cluster.Akka.Messages
             Properties.Clear();
         }
 
-        public DateTime Timestamp { get; private set; }
-
         public string Type { get; set; }
 
-        public Dictionary<string, object> Properties { get; private set; }
+        public DateTime Timestamp { get; } = DateTime.Now;
+        public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
     }
 }

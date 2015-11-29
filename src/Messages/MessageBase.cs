@@ -26,14 +26,21 @@ namespace Reply.Cluster.Akka.Messages
 {
     public abstract class MessageBase : IConsistentHashable
     {
-        public MessageBase()
+        protected MessageBase() : this(Guid.NewGuid(), Guid.NewGuid().ToString()) { }
+
+        protected MessageBase(Guid messageId) : this(messageId, Guid.NewGuid().ToString()) { }
+
+        protected MessageBase(string correlationID) : this(Guid.NewGuid(), correlationID) { }
+
+        protected MessageBase(Guid messageId, string correlationID)
         {
-            MessageId = Guid.NewGuid();
+            MessageId = messageId;
+            CorrelationID = correlationID;
         }
 
-        public virtual string CorrelationID { get; set; }
+        public virtual string CorrelationID { get; }
 
-        public Guid MessageId { get; protected set; }
+        public Guid MessageId { get; protected set; } = Guid.NewGuid();
 
         #region IConsistentHashable Members
 

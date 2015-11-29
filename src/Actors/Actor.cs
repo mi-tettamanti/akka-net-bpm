@@ -62,15 +62,8 @@ namespace Reply.Cluster.Akka.Actors
 
         public string CorrelationID { get; private set; }
 
-        public IEnumerable<Transition> InboundTransitions
-        {
-            get { return inboundTransitions.Values; }
-        }
-
-        public IEnumerable<Transition> OutboundTransitions
-        {
-            get { return outboundTransitions.Values; }
-        }
+        public IEnumerable<Transition> InboundTransitions => inboundTransitions.Values;
+        public IEnumerable<Transition> OutboundTransitions => outboundTransitions.Values; 
 
         #endregion
 

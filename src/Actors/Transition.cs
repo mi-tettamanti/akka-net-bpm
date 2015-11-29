@@ -33,10 +33,10 @@ namespace Reply.Cluster.Akka.Actors
             Condition = condition;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public string Source { get; private set; }
-        public string Destination { get; private set; }
-        public Func<object, bool> Condition { get; private set; }
+        public string Source { get; }
+        public string Destination { get; }
+        public Func<object, bool> Condition { get; }
     }
 }

@@ -25,10 +25,6 @@ namespace Reply.Cluster.Akka.Messages
 {
     public class Complete : MessageBase
     {
-        public Complete(Guid messageId, string correlationID)
-        {
-            MessageId = messageId;
-            CorrelationID = correlationID;
-        }
+        public Complete(Guid messageId, string correlationID) : base(messageId, correlationID) { }
     }
 }

@@ -8,10 +8,6 @@ namespace Reply.Cluster.Akka.Messages
 {
     public class ToBeCompleted : MessageBase
     {
-        public ToBeCompleted(Guid messageId, string correlationID)
-        {
-            MessageId = messageId;
-            CorrelationID = correlationID;
-        }
+        public ToBeCompleted(Guid messageId, string correlationID) : base(messageId, correlationID) { }
     }
 }
