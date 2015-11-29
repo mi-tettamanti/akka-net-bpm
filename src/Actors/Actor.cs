@@ -61,8 +61,11 @@ namespace Reply.Cluster.Akka.Actors
 
         protected override void PostStop()
         {
-            scriptSystem.Dispose();
-            scriptSystem = null;
+            if (scriptSystem != null)
+            {
+                scriptSystem.Dispose();
+                scriptSystem = null;
+            }
 
             base.PostStop();
         }
