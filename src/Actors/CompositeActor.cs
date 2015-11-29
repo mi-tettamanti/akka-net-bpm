@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Akka;
 using Akka.Actor;
 using Reply.Cluster.Akka.Messages;
+using NLua;
 
 namespace Reply.Cluster.Akka.Actors
 {
@@ -75,7 +76,7 @@ namespace Reply.Cluster.Akka.Actors
             
             if (actorTransitions.ContainsKey(source))
                 foreach (var transition in actorTransitions[source])
-                    if (transition.Condition(message))
+                    if (transition.Check(message))
                         targets.Add(transition.Destination);
 
             if (targets.Count == 0)
@@ -133,6 +134,22 @@ namespace Reply.Cluster.Akka.Actors
         {
             var child = Context.ActorOf(actorProps, name);
             children[name] = child.Path;
+        }
+
+        protected override void PreStart()
+        {
+            base.PreStart();
+
+            foreach (var transition in transitions.Values)
+                transition.AddToActor(this);
+        }
+
+        protected override void PostStop()
+        {
+            foreach (var transition in transitions.Values)
+                transition.RemoveFromActor(this);
+
+            base.PostStop();
         }
     }
 }

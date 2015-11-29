@@ -76,11 +76,13 @@
     <Compile Include="IActorContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ScriptTransition.cs" />
     <Compile Include="ProcessingActor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptActor.cs" />
+    <Compile Include="LambdaTransition.cs" />
     <Compile Include="Transition.cs" />
   </ItemGroup>
   <ItemGroup>

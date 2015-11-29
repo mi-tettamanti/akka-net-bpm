@@ -13,8 +13,8 @@ namespace Reply.Cluster.Akka.Actors
         private object[] args;
         private string script;
 
-        private Lua state;
         private LuaFunction execution;
+
         public ScriptActor(string script, params object[] args)
         {
             this.script = script;
@@ -28,30 +28,27 @@ namespace Reply.Cluster.Akka.Actors
 
         protected override void Execute(Message message)
         {
-            state["message"] = message;
+            ScriptSystem["message"] = message;
             execution.Call();
         }
 
         protected override void PreStart()
         {
-            state = new Lua();
-
-            state["context"] = this;
-            state["args"] = args;
-
-            state.RegisterFunction("createMessage", this.GetType().GetMethod(nameof(CreateMessage)));
-            state.RegisterFunction("putMessage", this, this.GetType().GetMethod(nameof(PutMessage)));
-
-            execution = state.LoadString(script, "execute");
-
             base.PreStart();
+
+            ScriptSystem["args"] = args;
+
+            ScriptSystem.RegisterFunction("createMessage", this.GetType().GetMethod(nameof(CreateMessage)));
+            ScriptSystem.RegisterFunction("putMessage", this, this.GetType().GetMethod(nameof(PutMessage)));
+
+            execution = ScriptSystem.LoadString(script, "execute");
         }
 
         protected override void PostStop()
         {
-            base.PostStop();
+            execution.Dispose();
 
-            state.Dispose();
+            base.PostStop();
         }
     }
 }

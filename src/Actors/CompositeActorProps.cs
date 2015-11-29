@@ -72,7 +72,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public CompositeActorProps AddTransition(string from, string to, Func<object, bool> condition)
         {
-            return AddTransition(new Transition(Guid.NewGuid().ToString(), from, to, condition));
+            return AddTransition(new LambdaTransition(from, to, condition));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public CompositeActorProps AddTransition(string from, string to, string condition)
         {
-            return AddTransition(new Transition(Guid.NewGuid().ToString(), from, to, condition));
+            return AddTransition(new ScriptTransition(from, to, condition));
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public CompositeActorProps AddTransition(string name, string from, string to, Func<object, bool> condition)
         {
-            return AddTransition(new Transition(name, from, to, condition));
+            return AddTransition(new LambdaTransition(name, from, to, condition));
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Reply.Cluster.Akka.Actors
         /// <exception cref="ArgumentException">A transition with the same name was already added.</exception>
         public CompositeActorProps AddTransition(string name, string from, string to, string condition)
         {
-            return AddTransition(new Transition(name, from, to, condition));
+            return AddTransition(new ScriptTransition(name, from, to, condition));
         }
 
         /// <summary>

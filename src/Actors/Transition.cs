@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #endregion
-using NLua;
+using Reply.Cluster.Akka.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,35 +24,37 @@ using System.Threading.Tasks;
 
 namespace Reply.Cluster.Akka.Actors
 {
-    public class Transition
+    public abstract class Transition
     {
-        public Transition(string name, string source, string destination, Func<object, bool> condition)
-        {
-            Name = name;
-            Source = source;
-            Destination = destination;
-            Condition = condition;
-        }
+        protected internal Transition(string source, string destination) : 
+            this(Guid.NewGuid().ToString("N").ToUpper(), source, destination)
+        { }
 
-        public Transition(string name, string source, string destination, string condition)
+        protected internal Transition(string name, string source, string destination)
         {
             Name = name;
             Source = source;
             Destination = destination;
-            Condition = m =>
-            {
-                using (var state = new Lua())
-                {
-                    state["message"] = m;
-                    return state.DoString($"return {condition}").First() as bool? ?? false;
-                }
-            };
         }
 
         public string Name { get; }
 
         public string Source { get; }
         public string Destination { get; }
-        public Func<object, bool> Condition { get; }
+
+
+        protected CompositeActor Actor { get; private set; }
+
+        protected internal abstract bool Check(Message message);
+
+        protected internal virtual void AddToActor(CompositeActor actor)
+        {
+            Actor = actor;
+        }
+
+        protected internal virtual void RemoveFromActor(CompositeActor actor)
+        {
+            Actor = null;
+        }
     }
 }

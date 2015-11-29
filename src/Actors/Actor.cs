@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Reply.Cluster.Akka.Messages;
+using NLua;
 
 namespace Reply.Cluster.Akka.Actors
 {
@@ -30,6 +31,8 @@ namespace Reply.Cluster.Akka.Actors
     {
         private Dictionary<string, Transition> inboundTransitions = new Dictionary<string, Transition>();
         private Dictionary<string, Transition> outboundTransitions = new Dictionary<string, Transition>();
+
+        private Lua scriptSystem;
 
         public Actor()
         {
@@ -39,6 +42,29 @@ namespace Reply.Cluster.Akka.Actors
 
                 ProcessMessage(message);
             });
+        }
+
+        internal Lua ScriptSystem
+        {
+            get
+            {
+                if (scriptSystem == null)
+                {
+                    scriptSystem = new Lua();
+
+                    scriptSystem["context"] = this;
+                }
+
+                return scriptSystem;
+            }
+        }
+
+        protected override void PostStop()
+        {
+            scriptSystem.Dispose();
+            scriptSystem = null;
+
+            base.PostStop();
         }
 
         protected abstract bool ProcessMessage(Message message);
