@@ -72,6 +72,10 @@
       <Project>{c421b1e4-fece-4860-bcae-a341c945cb4d}</Project>
       <Name>Actors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\Engine.csproj">
+      <Project>{b2d656c9-cf05-47eb-a4fd-3f1f79b97aa8}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Messages\Messages.csproj">
       <Project>{fff92219-4d19-488b-8897-d288539e4a91}</Project>
       <Name>Messages</Name>
